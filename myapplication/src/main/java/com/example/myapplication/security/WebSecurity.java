@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.example.myapplication.security.AuthenticationFilter;
 import com.example.myapplication.service.UserService;
 
 @Configuration
@@ -29,11 +30,19 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
         http.csrf().disable().authorizeRequests()
         .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
         .permitAll()
-        .anyRequest().authenticated();
+        .anyRequest().authenticated()
+        .and()
+        .addFilter(getAuthenticationFilter());
     }
     
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    }
+    
+    public AuthenticationFilter getAuthenticationFilter() throws Exception {
+        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+        filter.setFilterProcessesUrl("/users/login");
+        return filter;
     }
 }
