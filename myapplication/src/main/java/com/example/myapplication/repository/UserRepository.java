@@ -9,6 +9,5 @@ import com.example.myapplication.model.UserEntity;
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
 	// find user by email address
-	
 	UserEntity findByEmail(String email);
 }

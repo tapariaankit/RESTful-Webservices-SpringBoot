@@ -38,7 +38,7 @@ public class UserController {
 		
 	}
 	
-	@GetMapping(value = "/getUser")
+	@GetMapping()
 	public String getUser() {
 		return "user retrieved";
 	}
