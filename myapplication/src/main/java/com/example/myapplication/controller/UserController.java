@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.myapplication.dto.UserDto;
+import com.example.myapplication.exceptions.UserServiceException;
 import com.example.myapplication.model.request.UserDetailsRequestModel;
+import com.example.myapplication.model.response.ErrorMessages;
 import com.example.myapplication.model.response.UserDetailsResponseModel;
 import com.example.myapplication.service.impl.UserServiceImpl;
 
@@ -26,10 +28,12 @@ public class UserController {
 	
 	@PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, 
 			MediaType.APPLICATION_XML_VALUE})
-	public UserDetailsResponseModel createUser(@RequestBody UserDetailsRequestModel userDetails) {
+	public UserDetailsResponseModel createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
+		
+		if(userDetails.getFirstName().isEmpty())
+			throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 		
 		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
-		
 		UserDto userDto = new UserDto();
 		BeanUtils.copyProperties(userDetails, userDto);
 		
