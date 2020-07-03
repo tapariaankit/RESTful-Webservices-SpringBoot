@@ -2,6 +2,7 @@ package com.example.myapplication.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,8 @@ public class UserController {
 	@Autowired
 	UserServiceImpl userService;
 	
-	@PostMapping
+	@PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE})
 	public UserDetailsResponseModel createUser(@RequestBody UserDetailsRequestModel userDetails) {
 		
 		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
@@ -38,7 +40,8 @@ public class UserController {
 		
 	}
 	
-	@GetMapping(path="/{id}")
+	@GetMapping(path="/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE})
 	public UserDetailsResponseModel getUser(@PathVariable String id) {
 		
 		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
