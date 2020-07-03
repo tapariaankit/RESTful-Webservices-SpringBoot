@@ -16,6 +16,9 @@ import com.example.myapplication.dto.UserDto;
 import com.example.myapplication.exceptions.UserServiceException;
 import com.example.myapplication.model.request.UserDetailsRequestModel;
 import com.example.myapplication.model.response.ErrorMessages;
+import com.example.myapplication.model.response.OperationStatusModel;
+import com.example.myapplication.model.response.RequestOperationName;
+import com.example.myapplication.model.response.RequestOperationStatus;
 import com.example.myapplication.model.response.UserDetailsResponseModel;
 import com.example.myapplication.service.impl.UserServiceImpl;
 
@@ -54,14 +57,27 @@ public class UserController {
 		return returnValue;
 	}
 	
-	@PutMapping
-	public String updateUser() {
-		return "user updated";
+	@PutMapping(path="/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE})
+	public UserDetailsResponseModel updateUser(@PathVariable String id,@RequestBody UserDetailsRequestModel userDetails) {
+		UserDetailsResponseModel returnValue = new UserDetailsResponseModel();
+		UserDto userDto = new UserDto();
+		BeanUtils.copyProperties(userDetails, userDto);
+		
+		UserDto updatedUser = userService.updateUser(id, userDto);
+		BeanUtils.copyProperties(updatedUser, returnValue);
+		
+		return returnValue;
 	}
 	
-	@DeleteMapping
-	public String deleteUser() {
-		return "user deleted";
+	@DeleteMapping(path="/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, 
+			MediaType.APPLICATION_XML_VALUE})
+	public OperationStatusModel deleteUser(@PathVariable String id) {
+		OperationStatusModel operationStatusModel = new OperationStatusModel();
+		operationStatusModel.setOperationName(RequestOperationName.DELETE.name());
+		userService.deleteUser(id);
+		operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
+		return operationStatusModel;
 	}
 	
 }
